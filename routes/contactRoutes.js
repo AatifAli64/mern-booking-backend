@@ -1,5 +1,5 @@
 import express from "express";
-import Contact from "../models/Contact.js"; // Ensure casing matches your file
+import Contact from "../models/contact.js"; // Ensure casing matches your file
 import { protect, restrictTo } from "../middlewares/auth.js"; // Import Auth Middleware
 
 const router = express.Router();
