@@ -1,22 +1,36 @@
 import nodemailer from "nodemailer";
 
 export const sendEmail = async ({ to, subject, text, html }) => {
-  const transporter = nodemailer.createTransport({
-    // Use "gmail" if using a Gmail App Password
-    service: "gmail", 
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Your Gmail App Password
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com", // Explicit host
+      port: 587,              // Standard secure port for cloud servers
+      secure: false,          // false for port 587 (it upgrades to SSL automatically)
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      // This helps prevent errors on some cloud networks
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: to,
-    subject: subject,
-    text: text,
-    html: html, // Optional: Allows you to send pretty HTML emails later
-  };
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: to,
+      subject: subject,
+      text: text,
+      html: html,
+    };
 
-  await transporter.sendMail(mailOptions);
+    // Use await here to catch errors, but we will handle the speed in the Controller
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully: " + info.response);
+    
+  } catch (error) {
+    // Log the error so you can see it in Render logs
+    console.error("Email sending failed:", error); 
+    // We do NOT throw the error, so the user registration doesn't crash
+  }
 };
