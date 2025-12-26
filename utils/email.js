@@ -5,7 +5,7 @@ export const sendEmail = async ({ to, subject, text, html }) => {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com", // Explicit host
       port: 587,              // Standard secure port for cloud servers
-      secure: false,          // false for port 587 (it upgrades to SSL automatically)
+      secure: false,          // false for port 587 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -13,7 +13,8 @@ export const sendEmail = async ({ to, subject, text, html }) => {
       // This helps prevent errors on some cloud networks
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      family: 4
     });
 
     const mailOptions = {
